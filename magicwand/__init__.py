@@ -77,7 +77,8 @@ class SelectionWindow:
         meanstr = "mean=({:.2f}, {:.2f}, {:.2f})".format(*self.mean[:, 0])
         stdstr = "std=({:.2f}, {:.2f}, {:.2f})".format(*self.stddev[:, 0])
         cv.imshow(self.name, viz)
-        cv.displayStatusBar(self.name, ", ".join((meanstr, stdstr)))
+        #cv.displayStatusBar(self.name, ", ".join((meanstr, stdstr)))
+        print(meanstr, stdstr)
 
     def show(self):
         """Draws a window with the supplied image."""
