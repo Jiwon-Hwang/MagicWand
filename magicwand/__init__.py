@@ -21,7 +21,7 @@ class SelectionWindow:
         h, w = img.shape[:2]
         self.img = img
         self.mask = np.zeros((h, w), dtype=np.uint8)
-        self._flood_mask = np.zeros((h + 2, w + 2), dtype=np.uint8)
+        self._flood_mask = np.zeros((h + 2, w + 2), dtype=np.uint8) #
         self._flood_fill_flags = (
             connectivity | cv.FLOODFILL_FIXED_RANGE | cv.FLOODFILL_MASK_ONLY | 255 << 8
         )  # 255 << 8 tells to fill with the value 255
@@ -35,6 +35,7 @@ class SelectionWindow:
     def _trackbar_callback(self, pos):
         self.tolerance = (pos,) * 3
 
+    # 마우스 좌클릭 시(seed값)
     def _mouse_callback(self, event, x, y, flags, *userdata):
 
         if event != cv.EVENT_LBUTTONDOWN:
@@ -42,17 +43,17 @@ class SelectionWindow:
 
         modifier = flags & (ALT_KEY + SHIFT_KEY)
 
-        self._flood_mask[:] = 0
+        self._flood_mask[:] = 0 #
         cv.floodFill(
             self.img,
-            self._flood_mask,
+            self._flood_mask, #
             (x, y),
             0,
             self.tolerance,
             self.tolerance,
             self._flood_fill_flags,
         )
-        flood_mask = self._flood_mask[1:-1, 1:-1].copy()
+        flood_mask = self._flood_mask[1:-1, 1:-1].copy() #
 
         if modifier == (ALT_KEY + SHIFT_KEY):
             self.mask = cv.bitwise_and(self.mask, flood_mask)
@@ -61,9 +62,11 @@ class SelectionWindow:
         elif modifier == ALT_KEY:
             self.mask = cv.bitwise_and(self.mask, cv.bitwise_not(flood_mask))
         else:
-            self.mask = flood_mask
-
+            self.mask = flood_mask #
+        print(np.shape(self.mask)) # 마스크 shape : 이미지 shape과 동일 (모두 0으로 초기화)
+        print(self.mask)           # 마스크 값(행렬) : 선택O(flood fill)=255, 선택X=0
         self._update()
+
 
     def _update(self):
         """Updates an image in the already drawn window."""
